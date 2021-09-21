@@ -1,72 +1,50 @@
 package hh.swd20.bookstore.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import hh.swd20.bookstore.Domain.Book;
+import hh.swd20.bookstore.Domain.BookRepository;
+
+@Controller
 public class BookController {
+	@Autowired
+	private BookRepository repository;
 	
-	private String title;
-	private String author;
-	private int year;
-	private int isbn;
-	private float price;
-	
-	public BookController(String title, String author, int year, int isbn, float price) {
-		super();
-		this.title = title;
-		this.author = author;
-		this.year = year;
-		this.isbn = isbn;
-		this.price = price;
+	@RequestMapping(value = "/booklist")
+	public String getBook(Model model) {
+		model.addAttribute("books", repository.findAll());
+		return "booklist";
 	}
+	@RequestMapping(value = "/add")
+    public String addBook(Model model){
+    	model.addAttribute("book", new Book());
+        return "addbook";
+    }
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String save(Book book){
+        repository.save(book);
+        return "redirect:booklist";
+    }    
 
-	public BookController() {
-		super();
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public String deleteBook(@PathVariable("id") Long id, Model model) {
+    	repository.deleteById(id);
+        return "redirect:../booklist";
+    }
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public String editBook(@PathVariable("id") Long id, Model model) {
+    	model.addAttribute("book", repository.findById(id).get());
+        return "editbook";
+    }
+    @RequestMapping(value="/update/{id}", method=RequestMethod.POST)
+    public String saveEdit(@PathVariable("id")Long id, Book book, Model model) {
+		book.setId(id);
+		repository.save(book);
+		return "redirect:../booklist";
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	public int getYear() {
-		return year;
-	}
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	public int getIsbn() {
-		return isbn;
-	}
-
-	public void setIsbn(int isbn) {
-		this.isbn = isbn;
-	}
-
-	public float getPrice() {
-		return price;
-	}
-
-	public void setPrice(float price) {
-		this.price = price;
-	}
-
-	@Override
-	public String toString() {
-		return "BookController [title=" + title + ", author=" + author + ", year=" + year + ", isbn=" + isbn
-				+ ", price=" + price + "]";
-	}
-	
-	
-	
 }
