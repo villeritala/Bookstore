@@ -13,11 +13,11 @@ import hh.swd20.bookstore.Domain.BookRepository;
 @Controller
 public class BookController {
 	@Autowired
-	private BookRepository repository;
+	private BookRepository bookRepository;
 	
 	@RequestMapping(value = "/booklist")
 	public String getBook(Model model) {
-		model.addAttribute("books", repository.findAll());
+		model.addAttribute("books", bookRepository.findAll());
 		return "booklist";
 	}
 	@RequestMapping(value = "/add")
@@ -27,24 +27,24 @@ public class BookController {
     }
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(Book book){
-        repository.save(book);
+        bookRepository.save(book);
         return "redirect:booklist";
     }    
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String deleteBook(@PathVariable("id") Long id, Model model) {
-    	repository.deleteById(id);
+    	bookRepository.deleteById(id);
         return "redirect:../booklist";
     }
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editBook(@PathVariable("id") Long id, Model model) {
-    	model.addAttribute("book", repository.findById(id).get());
+    	model.addAttribute("book", bookRepository.findById(id).get());
         return "editbook";
     }
     @RequestMapping(value="/update/{id}", method=RequestMethod.POST)
     public String saveEdit(@PathVariable("id")Long id, Book book, Model model) {
 		book.setId(id);
-		repository.save(book);
+		bookRepository.save(book);
 		return "redirect:../booklist";
 	}
 }

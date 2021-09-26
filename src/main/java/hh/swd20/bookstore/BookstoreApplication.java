@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 
 import hh.swd20.bookstore.Domain.Book;
 import hh.swd20.bookstore.Domain.BookRepository;
+import hh.swd20.bookstore.Domain.Category;
+import hh.swd20.bookstore.Domain.CategoryRepository;
 
 
 @SpringBootApplication
@@ -23,17 +25,18 @@ public class BookstoreApplication {
 	}
 	
 	@Bean
-	public CommandLineRunner bookStore(BookRepository repository) {
+	public CommandLineRunner bookStore(BookRepository bookRepository, CategoryRepository categoryRepository) {
 		return (args) -> {
+			categoryRepository.save(new Category("Fantasy"));
+
 			log.info("save a couple of books");
-			repository.save(new Book("Tuntematon sotilas", "Väinö Linna", 1954, "123445-234", 12.40));
-			repository.save(new Book("Taru Sormusten Herrasta", "J.R.R. Tolkien", 1937, "34656-234", 17.70));
+			bookRepository.save(new Book("Taru sormusten herrasta", "Tolkien", 1934, "2323-45454", 23.34, categoryRepository.findByName("Fantasy").get(0)));
 			
 			log.info("fetch all books");
-			for (Book book : repository.findAll()) {
+			for (Book book : bookRepository.findAll()) {
 				log.info(book.toString());
 			}
-
+			
 		};
 	}
 }
