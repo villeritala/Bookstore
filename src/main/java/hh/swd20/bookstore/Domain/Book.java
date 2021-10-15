@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
+
 
 
 
@@ -23,17 +27,12 @@ public class Book {
 	private double price;
 	
 	@ManyToOne
+	@JsonIgnoreProperties("books")
 	@JoinColumn(name="categoryId")
 	private Category category;
 
-
 	public Book() {
-		super();
-		this.title = null;
-		this.author = null;
-		this.year = 0;
-		this.isbn = null;
-		this.price = 0;
+		
 	}
 	
 	public Book(String title, String author, int year, String isbn, double price, Category category) {
